@@ -14,6 +14,11 @@ provider "aws" {
 }
 
 # resource "aws_instance" "app_server" {
+
+# for_each = toset(["one", "two", "three"])
+
+#   name = "instance-${each.key}"
+
 #   ami           = "ami-08d70e59c07c61a3a"
 #   instance_type = "t2.micro"
 
@@ -22,16 +27,33 @@ provider "aws" {
 #   }
 # }
 
-module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+module "ec2_instance" {
+  source  = "terraform-aws-modules/ec2-instance/aws"
 
-  bucket = "app-s3-bucket111115934"
-  acl    = "private"
+  for_each = toset(["AdventureTech", "NatureEscape", "DataSummit"])
 
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
+  name = "instance-${each.key}"
 
-  versioning = {
-    enabled = true
+  instance_type          = "t2.micro"
+  monitoring             = true
+
+  tags = {
+    Terraform   = "true"
+    Environment = "dev"
   }
 }
+
+
+# module "s3_bucket" {
+#   source = "terraform-aws-modules/s3-bucket/aws"
+
+#   bucket = "app-s3-bucket111115934"
+#   acl    = "private"
+
+#   control_object_ownership = true
+#   object_ownership         = "ObjectWriter"
+
+#   versioning = {
+#     enabled = true
+#   }
+# }
