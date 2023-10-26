@@ -13,11 +13,25 @@ provider "aws" {
   region  = "us-west-2"
 }
 
-resource "aws_instance" "app_server" {
-  ami           = "ami-830c94e3"
-  instance_type = "t2.micro"
+# resource "aws_instance" "app_server" {
+#   ami           = "ami-08d70e59c07c61a3a"
+#   instance_type = "t2.micro"
 
-  tags = {
-    Name = "AppServerInstance"
+#   tags = {
+#     Name = "AppServerInstance"
+#   }
+# }
+
+module "s3_bucket" {
+  source = "terraform-aws-modules/s3-bucket/aws"
+
+  bucket = "app-s3-bucket111115934"
+  acl    = "private"
+
+  control_object_ownership = true
+  object_ownership         = "ObjectWriter"
+
+  versioning = {
+    enabled = true
   }
 }
